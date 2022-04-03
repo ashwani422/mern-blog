@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router()
 
-import {findUser, getUsers, addUser, deleteUser} from '../controllers/usersController.js'
+import {findUser, getUsers, addUser, deleteUser} from '../controllers/userController.js'
 
 router.get('/:id', findUser)
 router.get('/', getUsers)

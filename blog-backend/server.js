@@ -3,7 +3,7 @@ import express from 'express'
 import morgan from 'morgan'
 import mongoose from 'mongoose'
 
-import usersRouter from './routes/usersRoutes.js'
+import userRouter from './routes/userRoutes.js'
 
 const app = express()
 const port = process.env.PORT || 8000
@@ -16,9 +16,9 @@ app.use(express.urlencoded({extended: true}))
 
 
 app.get('/', (req, res) => {
-  res.json({response: 'working'})
+  res.status(200).json({response: 'working'})
 })
-app.use('/users', usersRouter)
+app.use('/user', userRouter)
 
 
 async function main() {
