@@ -16,9 +16,9 @@ app.use(express.urlencoded({extended: true}))
 
 
 app.get('/', (req, res) => {
-  res.status(200).json({response: 'working'})
+  res.status(200).json({response: 'Yehea! working!'})
 })
-app.use('/user', userRouter)
+app.use('/api/users', userRouter)
 
 
 async function main() {

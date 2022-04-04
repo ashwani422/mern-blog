@@ -1,11 +1,20 @@
 import validator from 'validator'
+import jwt from 'jsonwebtoken'
 
 import User from '../models/User.js'
 
-export const findUser = async (req, res) => {
+//-- START function for generating JWT token ------------------------------------------------------------------------------
+const generateToken = username => {
+  // sign a jwt token
+  return jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '30d' })
+}
+//-- END function for generating JWT token -------------------------------------------------------------------------------- 
+
+export const getUser = async (req, res) => {
   try {
+
     // sanitize received data
-    const username = validator.escape(req.params.username)
+    const username = validator.escape(req.user.username)
 
     // find the user with given username
     const user = await User.findOne({ username })
@@ -18,30 +27,12 @@ export const findUser = async (req, res) => {
   } catch (error) {
     // catch all the errors and send back
     console.log(error.message)
-    return res.status(200).json({ error: error.message })
+    return res.status(400).json({ error: error.message })
   }
 }
 
 
-export const getUsers = async (req, res) => {
-  try {
-    // fetch all the users
-    const users = await User.find()
-
-    // if not a single users
-    if (Array.isArray(users) && !users.length) throw new Error('No users found.')
-
-    // if there is/are user(s)
-    return res.status(200).json({ response: users })
-  } catch (error) {
-    // catch all the errors and send back
-    console.log(error.message)
-    return res.status(200).json({ error: error.message })
-  }
-}
-
-
-export const addUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
     // create a user object with sanitized data
     const newUser = new User({
@@ -50,15 +41,22 @@ export const addUser = async (req, res) => {
       password: validator.escape(req.body.password),
     })
 
-    // save the document in the database
-    const savedUser = await newUser.save()
+    const token = generateToken(newUser.username)
+    // console.log(token)
 
-    // if user saved send back
-    return res.status(200).json({ response: savedUser })
+    // save the document in the database
+    const savedUser = await User.create(newUser)
+
+    // if user saved send back with the token
+    return res.status(201).json({ response: {
+      username: savedUser.username,
+      email: savedUser.email,
+      token,
+    } })
   } catch (error) {
     // catch all the errors and send back
     console.log(error.message)
-    return res.status(200).json({ error: error.message })
+    return res.status(400).json({ error: error.message })
   }
 }
 
@@ -66,7 +64,7 @@ export const addUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     // sanitize received data
-    const username = validator.escape(req.params.username)
+    const username = validator.escape(req.user.username)
 
     // find a user by username and delete
     const deletedUser = await User.findOneAndDelete({ username })
@@ -79,6 +77,6 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     // catch all the errors and send back
     console.log(error.message)
-    return res.status(200).json({ error: error.message })
+    return res.status(400).json({ error: error.message })
   }
 }
