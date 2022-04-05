@@ -2,11 +2,11 @@ import express from 'express'
 const router = express.Router()
 
 import protect from '../middlewares/jwtAuthMiddleware.js'
-import {getUser, registerUser, deleteUser} from '../controllers/userController.js'
-  
-  
+import { loginUser, registerUser, deleteUser } from '../controllers/userController.js'
+
+
 router.route('/')
-  .get(protect, getUser)
+  .get(loginUser)
   .post(registerUser)
   .delete(protect, deleteUser)
 

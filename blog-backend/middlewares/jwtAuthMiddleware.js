@@ -1,23 +1,27 @@
 import jwt from 'jsonwebtoken'
+import createResult from '../utils/createResult.js'
 
 export default function protect(req, res, next) {
 
-  if (req.headers && req.headers.authorization) {
+  if (req.headers && !req.headers.authorization) {
 
-    const token = req.headers.authorization.split(' ')[1]
+    console.log('No token found.')
+    return res.status(500).json(createResult('No token found.'))
 
-    try {
-      // verify the token and decode
-      const decoded = jwt.verify(token, process.env.JWT_SECRET)
+  }
 
-      // set decoded info into req object
-      req.user = { username: decoded.username }
+  const token = req.headers.authorization.split(' ')[1]
 
-    } catch (err) {
-      console.log(err.message)
-      return res.status(500).json({ error: err.message })
-    }
+  try {
+    // verify the token and decode
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
+    // set decoded info into req object
+    req.user = { username: decoded.username }
+
+  } catch (err) {
+    console.log(err.message)
+    return res.status(500).json(createResult(err.message))
   }
 
   next()

@@ -12,11 +12,11 @@ const db = process.env.DB || "mern-blog"
 
 app.use(morgan('dev'))  // http req logger middleware
 app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }))
 
 
 app.get('/', (req, res) => {
-  res.status(200).json({response: 'Yehea! working!'})
+  res.status(200).json({ response: 'Yehea! working!' })
 })
 app.use('/api/user', userRouter)
 
