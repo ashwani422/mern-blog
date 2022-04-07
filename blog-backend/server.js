@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import mongoose from 'mongoose'
 
 import userRouter from './routes/userRoutes.js'
+import postRouter from './routes/postRoutes.js'
 
 const app = express()
 const port = process.env.PORT || 8000
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
   res.status(200).json({ response: 'Yehea! working!' })
 })
 app.use('/api/user', userRouter)
+app.use('/api/posts', postRouter)
 
 
 async function main() {

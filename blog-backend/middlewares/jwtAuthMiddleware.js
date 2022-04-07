@@ -17,7 +17,7 @@ export default function protect(req, res, next) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
     // set decoded info into req object
-    req.user = { username: decoded.username }
+    req.user = { id: decoded.id }
 
   } catch (err) {
     console.log(err.message)
